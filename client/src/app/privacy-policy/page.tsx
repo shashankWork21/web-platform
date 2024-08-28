@@ -8,12 +8,12 @@ export default function PrivacyPolicy() {
       <section>
         <h2 className="text-2xl font-semibold mb-2">1. Introduction</h2>
         <p>
-          SmartAlgorhythm ("we", "our", or "us") is committed to protecting your
-          privacy. This Privacy Policy explains how we collect, use, disclose,
-          and safeguard your information when you visit our website or use our
-          services, including data collected via OAuth. By accessing our
-          services, you agree to the collection and use of your data in
-          accordance with this policy.
+          SmartAlgorhythm (&quot;we&quot;, &quot;our&quot;, or &quot;us&quot;)
+          is committed to protecting your privacy. This Privacy Policy explains
+          how we collect, use, disclose, and safeguard your information when you
+          visit our website or use our services, including data collected via
+          OAuth. By accessing our services, you agree to the collection and use
+          of your data in accordance with this policy.
         </p>
       </section>
 
@@ -165,8 +165,8 @@ export default function PrivacyPolicy() {
           We may update this Privacy Policy periodically to reflect changes in
           our practices or for other operational, legal, or regulatory reasons.
           We will notify you of significant changes by posting the new policy on
-          our website and updating the "Last Updated" date at the top of this
-          policy.
+          our website and updating the &quot;Last Updated&quot; date at the top
+          of this policy.
         </p>
       </section>
 

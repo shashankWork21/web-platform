@@ -83,7 +83,7 @@ export default function ContactForm({ resources }: any) {
         router.push("/");
       }, 2000);
     }
-  }, [serviceOptions, formStatePassword]);
+  }, [serviceOptions, formStatePassword, router, services]);
 
   return (
     <form
@@ -194,7 +194,8 @@ export default function ContactForm({ resources }: any) {
       </Button>
       {formStatePassword.success && (
         <Alert color="green" className="text-center">
-          Your details have been captured successfully! We'll reach out soon!
+          Your details have been captured successfully! We&apos;ll reach out
+          soon!
         </Alert>
       )}
     </form>
