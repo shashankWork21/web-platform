@@ -1,12 +1,11 @@
 "use client";
 
 import { useCountries } from "use-react-countries";
-import { registerUser } from "@/actions";
 import { useAuth } from "@/context/authContext";
 import { useFormState } from "react-dom";
 import Input from "../general/input";
 import PhoneInput from "./phone-input";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Alert, Button, Typography } from "@material-tailwind/react";
 import { createServiceRequestFromContactForm } from "@/actions";
 import Dropdown, { DropdownOption } from "./dropdown";
@@ -23,9 +22,13 @@ export default function ContactForm({ resources }: any) {
   );
   const [country, setCountry] = useState(0);
 
-  const services =
-    resources?.filter((resource: any) => resource.resourceType === "SERVICE") ||
-    [];
+  const services = useMemo(() => {
+    return (
+      resources?.filter(
+        (resource: any) => resource.resourceType === "SERVICE"
+      ) || []
+    );
+  }, [resources]);
 
   const activeServiceOptions: DropdownOption[] = services.map(
     (service: any) => ({
