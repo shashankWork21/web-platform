@@ -31,6 +31,7 @@ export async function createResourceVariant(
       }
     );
     revalidatePath("/admin/dashboard/categories");
+    revalidatePath("/contact");
   } catch (error: unknown) {
     if (error instanceof AxiosError) {
       console.log(error.response?.data.error);
@@ -77,6 +78,7 @@ export async function modifyResourceVariant(
       }
     );
     revalidatePath("/admin/dashboard/categories");
+    revalidatePath("/contact");
   } catch (error: unknown) {
     if (error instanceof AxiosError) {
       console.log(error);
@@ -125,6 +127,7 @@ export async function toggleVariantAvailability(
       }
     );
     revalidatePath("/admin/dashboard/categories");
+    revalidatePath("/contact");
   } catch (error: unknown) {
     if (error instanceof AxiosError) {
       console.log(error.response?.data.error);
@@ -151,6 +154,7 @@ export async function deleteVariant(id: string) {
       },
     });
     revalidatePath("/admin/dashboard/services");
+    revalidatePath("/contact");
   } catch (error: unknown) {
     if (error instanceof AxiosError) {
       if (error instanceof AxiosError) {

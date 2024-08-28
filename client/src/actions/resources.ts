@@ -54,7 +54,8 @@ export async function createResource(
         },
       }
     );
-    revalidatePath("/admin/dashboard/resources");
+    revalidatePath("/admin/dashboard/categories");
+    revalidatePath("/contact");
   } catch (error: unknown) {
     if (error instanceof AxiosError) {
       console.log(error.response?.data.error);
@@ -98,7 +99,8 @@ export async function modifyResource(
         },
       }
     );
-    revalidatePath("/admin/dashboard/resources");
+    revalidatePath("/admin/dashboard/categories");
+    revalidatePath("/contact");
   } catch (error: unknown) {
     if (error instanceof AxiosError) {
       if (error instanceof AxiosError) {
@@ -121,7 +123,8 @@ export async function deleteResource(id: string) {
         Authorization: cookies().get("session")?.value,
       },
     });
-    revalidatePath("/admin/dashboard/resources");
+    revalidatePath("/admin/dashboard/categories");
+    revalidatePath("/contact");
   } catch (error: unknown) {
     if (error instanceof AxiosError) {
       if (error instanceof AxiosError) {
@@ -157,7 +160,8 @@ export async function disableResource(
         },
       }
     );
-    revalidatePath("/admin/dashboard/resources");
+    revalidatePath("/admin/dashboard/categories");
+    revalidatePath("/contact");
   } catch (error: unknown) {
     if (error instanceof AxiosError) {
       console.log(error);
@@ -194,6 +198,7 @@ export async function enableResource(
       }
     );
     revalidatePath("/admin/dashboard");
+    revalidatePath("/contact");
   } catch (error: unknown) {
     if (error instanceof AxiosError) {
       return {
