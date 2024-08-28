@@ -17,10 +17,6 @@ export default function Dropdown({
 }: any) {
   const [selectedOption, setSelectedOption] = useState(defaultValue.value);
 
-  useEffect(() => {
-    setSelectedOption(defaultValue.value);
-  }, [defaultValue]);
-
   const handleOptionClick = (value: string) => {
     setOptions(
       options.map((option: DropdownOption) => ({
