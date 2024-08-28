@@ -1,3 +1,5 @@
+import dotenv from "dotenv";
+
 export const environment = {
   tokenSecret: process.env.TOKEN_SECRET,
   refreshTokenSecret: process.env.REFRESH_TOKEN_SECRET,

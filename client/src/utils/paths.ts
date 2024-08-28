@@ -1,4 +1,4 @@
-export const backendUrl = process.env.BACKEND_URL;
+export const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
 
 export function getGoogleAuthUrlUser() {
   return `${backendUrl}/auth/google`;
@@ -9,6 +9,7 @@ export function getGoogleAuthUrlAdmin() {
 }
 
 export function validateSessionUrl() {
+  console.log(backendUrl);
   return `${backendUrl}/sessions`;
 }
 
