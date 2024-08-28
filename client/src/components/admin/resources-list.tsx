@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import ResourceEditForm from "./resource-edit-form";
 
 const ResourcesList = ({ resources, currencies }: any) => {

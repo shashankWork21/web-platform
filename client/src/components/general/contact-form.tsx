@@ -23,9 +23,9 @@ export default function ContactForm({ resources }: any) {
   );
   const [country, setCountry] = useState(0);
 
-  const services = resources.filter(
-    (resource: any) => resource.resourceType === "SERVICE"
-  );
+  const services =
+    resources?.filter((resource: any) => resource.resourceType === "SERVICE") ||
+    [];
 
   const activeServiceOptions: DropdownOption[] = services.map(
     (service: any) => ({
@@ -118,7 +118,6 @@ export default function ContactForm({ resources }: any) {
         isError={!!formStatePassword.errors?.email}
         errors={formStatePassword.errors?.email}
       />
-
       <PhoneInput
         required
         countries={countriesCurrent}
@@ -127,7 +126,6 @@ export default function ContactForm({ resources }: any) {
         isError={!!formStatePassword.errors?.phoneNumber}
         errors={formStatePassword.errors?.phoneNumber}
       />
-
       <Input
         required
         type="text"
@@ -158,6 +156,7 @@ export default function ContactForm({ resources }: any) {
         options={serviceOptions}
         setOptions={setServiceOptions}
       />
+      &quot;
       <Dropdown
         itemLabel="Type"
         defaultValue={

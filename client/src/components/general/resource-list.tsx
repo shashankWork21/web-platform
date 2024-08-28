@@ -11,7 +11,7 @@ export default function ResourceList({ activeResources }: any) {
         Resources
       </Typography>
       <div className="grid grid-cols-1 gap-8">
-        {activeResources.map((resource: any) => (
+        {activeResources?.map((resource: any) => (
           <Card
             key={resource.id}
             className="shadow-lg p-6 w-full lg:w-3/4 bg-stone-white-5 mx-auto"
