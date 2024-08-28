@@ -1,8 +1,9 @@
 import http from "http";
 import app from "./app";
-import dotenv from "dotenv";
+import * as dotenv from "dotenv";
 
 dotenv.config();
+console.log(process.env.BACKEND_URL);
 
 import { environment } from "./utils/environment";
 
