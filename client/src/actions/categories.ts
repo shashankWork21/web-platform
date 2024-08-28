@@ -39,6 +39,8 @@ export async function createCategory(formState: any, formData: FormData) {
       }
     );
     revalidatePath("/admin/dashboard/categories");
+    revalidatePath("/contact");
+    revalidatePath("/resources");
   } catch (error: unknown) {
     if (error instanceof AxiosError) {
       console.log(error.response?.data.error);
@@ -102,6 +104,8 @@ export async function deleteCategory(id: string) {
       },
     });
     revalidatePath("/admin/dashboard/categories");
+    revalidatePath("/contact");
+    revalidatePath("/resources");
   } catch (error: unknown) {
     if (error instanceof AxiosError) {
       if (error instanceof AxiosError) {
@@ -135,6 +139,8 @@ export async function disableCategory(
       }
     );
     revalidatePath("/admin/dashboard/categories");
+    revalidatePath("/contact");
+    revalidatePath("/resources");
   } catch (error: unknown) {
     if (error instanceof AxiosError) {
       return {
@@ -167,7 +173,9 @@ export async function enableCategory(
         },
       }
     );
-    revalidatePath("/admin/dashboard");
+    revalidatePath("/admin/dashboard/categories");
+    revalidatePath("/contact");
+    revalidatePath("/resources");
   } catch (error: unknown) {
     if (error instanceof AxiosError) {
       if (error instanceof AxiosError) {
