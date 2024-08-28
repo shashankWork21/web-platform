@@ -1,4 +1,4 @@
-export const backendUrl = "http://localhost:4000/api";
+export const backendUrl = process.env.BACKEND_URL;
 
 export function getGoogleAuthUrlUser() {
   return `${backendUrl}/auth/google`;
