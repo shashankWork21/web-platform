@@ -2,6 +2,7 @@ import { google } from "googleapis";
 import { environment } from "./environment";
 
 export function getClient(redirectUri: string) {
+  console.log(environment.clientId);
   return new google.auth.OAuth2(
     environment.clientId,
     environment.clientSecret,
