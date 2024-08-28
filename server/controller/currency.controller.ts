@@ -31,10 +31,12 @@ export async function addCurrency(request: Request, response: Response) {
     const sessionToken = request.headers.authorization as string;
     const { user } = await getUserFromSessionToken(sessionToken);
     const { name, shortform, inrConversion, symbol } = request.body;
+    console.log(request.body);
     const result = verifyCurrencyData({
       name,
       shortform,
       inrConversion,
+      symbol,
     } as Currency);
     if (!result.success) {
       throw new Error(JSON.stringify({ errors: result.errors }));
