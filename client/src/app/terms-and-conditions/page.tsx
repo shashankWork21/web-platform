@@ -1,3 +1,8 @@
+export const metadata = {
+  title: "Terms and Conditions | Smart Algorhythm",
+  description: "Terms of Use of our products and services",
+};
+
 export default function TermsAndConditions() {
   return (
     <div className="container mx-auto p-6 space-y-4">

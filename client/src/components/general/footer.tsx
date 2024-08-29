@@ -22,7 +22,7 @@ export default function Footer() {
 
         <div className="flex justify-center space-x-6">
           <a
-            href="https://twitter.com"
+            href="https://x.com/shashankbr21494"
             target="_blank"
             rel="noopener noreferrer"
             className="hover:text-gray-600"
@@ -30,7 +30,7 @@ export default function Footer() {
             <FaTwitter className="w-6 h-6" />
           </a>
           <a
-            href="https://linkedin.com"
+            href="https://www.linkedin.com/in/shashank-b-r-36a244a6/"
             target="_blank"
             rel="noopener noreferrer"
             className="hover:text-gray-600"

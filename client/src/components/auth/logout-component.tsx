@@ -9,9 +9,10 @@ import {
   PopoverHandler,
   Typography,
 } from "@material-tailwind/react";
+import Link from "next/link";
 import { useEffect } from "react";
 import { useFormState } from "react-dom";
-import { FaRegUserCircle } from "react-icons/fa";
+import { FaUserCircle } from "react-icons/fa";
 
 export default function LogoutComponent() {
   const { user, setUser } = useAuth();
@@ -26,8 +27,8 @@ export default function LogoutComponent() {
   return (
     <Popover placement="left">
       <PopoverHandler>
-        <Button className="mr-5">
-          <FaRegUserCircle className="w-8 h-8" />
+        <Button aria-label="Logout" className="mr-5">
+          <FaUserCircle className="w-8 h-8" />
         </Button>
       </PopoverHandler>
       <PopoverContent>
@@ -35,8 +36,16 @@ export default function LogoutComponent() {
           <Typography className="font-bold text-signal-black">
             Welcome, {user.firstName}
           </Typography>
+          <Link
+            href={user.role === "ADMIN" ? "/admin/dashboard" : "/dashboard"}
+            className="text-signal-black hover:border-b-2 hover-border-signal-black"
+          >
+            Go to Dashboard
+          </Link>
           <form action={action}>
-            <Button type="submit">Logout</Button>
+            <Button aria-label="Logout" type="submit">
+              Logout
+            </Button>
           </form>
         </div>
       </PopoverContent>

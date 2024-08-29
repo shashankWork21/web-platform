@@ -5,7 +5,7 @@ import {
   PopoverHandler,
 } from "@material-tailwind/react";
 import Link from "next/link";
-import { FaRegUserCircle } from "react-icons/fa";
+import { FaUserCircle } from "react-icons/fa";
 
 export default function LoginComponent() {
   return (
@@ -13,8 +13,12 @@ export default function LoginComponent() {
       <div className="block md:hidden">
         <Popover placement="bottom-end">
           <PopoverHandler>
-            <Button className="mr-5" variant="outlined">
-              <FaRegUserCircle className="w-8 h-8" />
+            <Button
+              aria-label="Login or Register"
+              className="mr-5"
+              variant="outlined"
+            >
+              <FaUserCircle className="w-8 h-8" />
             </Button>
           </PopoverHandler>
           <PopoverContent className="p-5">
@@ -39,8 +43,12 @@ export default function LoginComponent() {
       <div className="hidden md:block">
         <Popover placement="left">
           <PopoverHandler>
-            <Button className="mr-5" variant="outlined">
-              <FaRegUserCircle className="w-8 h-8" />
+            <Button
+              aria-label="Login or Register"
+              className="mr-5"
+              variant="outlined"
+            >
+              <FaUserCircle className="w-8 h-8" />
             </Button>
           </PopoverHandler>
           <PopoverContent className="p-5">
