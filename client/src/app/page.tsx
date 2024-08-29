@@ -29,13 +29,13 @@ export default function Home() {
       <div className="flex flex-col md:flex-row items-center justify-center space-y-4 md:space-y-0 md:space-x-12">
         <Link
           href="/contact"
-          className="px-8 md:px-12 py-3 md:py-4 rounded-xl shadow-xl bg-cypher-blue hover:bg-cypher-blue-4 hover:scale-110 text-white text-xl md:text-2xl transition-all duration-300"
+          className="px-8 md:px-12 py-3 md:py-4 rounded-xl shadow-xl bg-cypher-blue hover:bg-cypher-blue-4 hover:scale-110 text-white text-lg md:text-xl transition-all duration-300"
         >
           Get Started
         </Link>
         <Link
           href="/resources"
-          className="px-8 md:px-10 py-3 rounded-xl shadow-xl border-2 border-signal-black-5 hover:border-signal-black-5 hover:bg-signal-black-5 hover:scale-105 hover:text-white text-xl md:text-2xl transition-all duration-300"
+          className="px-8 md:px-10 py-3 rounded-xl shadow-xl border-2 border-signal-black-5 hover:border-signal-black-5 hover:bg-signal-black-5 hover:scale-105 hover:text-white text-lg md:text-xl transition-all duration-300"
         >
           Explore Services
         </Link>
