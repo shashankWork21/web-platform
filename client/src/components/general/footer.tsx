@@ -30,7 +30,7 @@ export default function Footer() {
             <FaTwitter className="w-6 h-6" />
           </a>
           <a
-            href="https://www.linkedin.com/in/shashank-b-r-36a244a6/"
+            href="https://www.linkedin.com/in/shashankbr21/"
             target="_blank"
             rel="noopener noreferrer"
             className="hover:text-gray-600"
