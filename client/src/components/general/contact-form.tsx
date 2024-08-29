@@ -159,7 +159,6 @@ export default function ContactForm({ resources }: any) {
         options={serviceOptions}
         setOptions={setServiceOptions}
       />
-      &quot;
       <Dropdown
         itemLabel="Type"
         defaultValue={
