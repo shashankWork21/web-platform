@@ -13,13 +13,13 @@ export default function Home() {
       />
       <div className="flex flex-col items-center justify-center space-y-8 md:space-y-12">
         <div className="flex flex-col items-center justify-center space-y-4 md:space-y-6">
-          <p className="text-3xl md:text-5xl text-center font-thin leading-relaxed">
+          <p className="text-2xl md:text-4xl text-center font-thin leading-relaxed">
             Focus on{" "}
             <span className="border-b-4 md:border-b-8 pb-1 border-lime-green font-medium">
               your best
             </span>
           </p>
-          <p className="text-3xl md:text-5xl text-center font-thin leading-relaxed">
+          <p className="text-2xl md:text-4xl text-center font-thin leading-relaxed">
             Let{" "}
             <span className="border-b-4 md:border-b-8 pb-1 border-lime-green font-medium">
               technology
@@ -28,7 +28,7 @@ export default function Home() {
           </p>
         </div>
 
-        <p className="text-lg md:text-xl text-center font-light leading-relaxed md:leading-loose max-w-3xl mt-6">
+        <p className="text-lg md:text-2xl text-center font-light leading-relaxed md:leading-loose max-w-3xl mt-6">
           Simplify your workflow and reclaim your time with smart automation
           that handles your repetitive tasks and organizes your information
           effortlessly.
