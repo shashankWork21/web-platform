@@ -12,18 +12,24 @@ export default function Home() {
         className="w-3/4 md:w-auto"
       />
       <div className="flex flex-col items-center justify-center space-y-4 md:space-y-6">
-        <p className="text-3xl md:text-5xl text-center font-thin leading-relaxed md:leading-loose">
+        <p className="text-3xl md:text-5xl text-center font-thin leading-relaxed">
           Focus on{" "}
           <span className="border-b-4 md:border-b-8 pb-1 border-lime-green font-medium">
             your best
           </span>
         </p>
-        <p className="text-3xl md:text-5xl text-center font-thin leading-relaxed md:leading-loose">
+        <p className="text-3xl md:text-5xl text-center font-thin leading-relaxed">
           Let{" "}
           <span className="border-b-4 md:border-b-8 pb-1 border-lime-green font-medium">
             technology
           </span>{" "}
           take care of the rest!
+        </p>
+
+        <p className="text-lg md:text-xl text-center font-light leading-relaxed md:leading-loose max-w-3xl mt-6">
+          Simplify your workflow and reclaim your time with smart automation
+          that handles your repetitive tasks and organizes your information
+          effortlessly.
         </p>
       </div>
       <div className="flex flex-col md:flex-row items-center justify-center space-y-4 md:space-y-0 md:space-x-12">
@@ -37,7 +43,7 @@ export default function Home() {
           href="/resources"
           className="px-8 md:px-10 py-3 rounded-xl shadow-xl border-2 border-signal-black-5 hover:border-signal-black-5 hover:bg-signal-black-5 hover:scale-105 hover:text-white text-lg md:text-xl transition-all duration-300"
         >
-          Explore Services
+          Explore Solutions
         </Link>
       </div>
     </div>
