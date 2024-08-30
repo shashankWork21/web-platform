@@ -32,7 +32,7 @@ export default function VariantPanel(props: any) {
         />
       </div>
       {includeStatement}
-      <ul className="list-disc pl-5 mb-4">
+      <ul className="list-disc list-outside pl-5 mb-4">
         {props.variant.details.map((detail: any, index: number) => {
           return <li key={index}>{detail}</li>;
         })}
