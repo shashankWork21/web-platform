@@ -28,7 +28,7 @@ export default function Home() {
           </p>
         </div>
 
-        <p className="text-lg md:text-2xl text-center font-light leading-relaxed md:leading-loose max-w-3xl mt-6">
+        <p className="text-lg md:text-2xl text-center font-medium leading-relaxed max-w-4xl mt-6">
           Simplify your workflow and reclaim your time with smart automation
           that handles your repetitive tasks and organizes your information
           effortlessly.
