@@ -11,8 +11,6 @@ import {
 
 import Image from "next/image";
 
-import { CiSearch } from "react-icons/ci";
-
 interface PhoneInputProps {
   isError: boolean;
   errors: string[];

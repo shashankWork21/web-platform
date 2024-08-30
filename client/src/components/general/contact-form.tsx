@@ -17,8 +17,10 @@ export default function ContactForm({ resources }: any) {
   const router = useRouter();
   const { countries } = useCountries();
   const countryCallingCodesCurrent = ["+1", "+91"];
-  const countriesCurrent = countries.filter((country: any) =>
-    countryCallingCodesCurrent.includes(country.countryCallingCode)
+  const countriesCurrent = countries.filter(
+    (country: any) =>
+      countryCallingCodesCurrent.includes(country.countryCallingCode) &&
+      !country.name.includes("Islands")
   );
   const [country, setCountry] = useState(0);
 
