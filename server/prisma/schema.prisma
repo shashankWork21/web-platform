@@ -10,29 +10,79 @@ datasource db {
 enum LoginSource {
   PASSWORD
   GOOGLE
-  UNKNOWN
 }
 
 enum OauthProfile {
   GOOGLE
 }
 
-enum PricingModel {
-  ONE_TIME
+enum Scope {
+  EMAIL
+  PROFILE
+  CALENDAR
+  DRIVE
+  FORM
+  SHEETS
+  SLIDES
+  DOCS
+  GMAIL
+  OPENID
+}
+
+enum Frequency {
   HOURLY
   WEEKLY
   DAILY
   MONTHLY
-  PER_UNIT
-  HYBRID
 }
 
-enum Role {
-  USER
+enum PlatformRole {
   ADMIN
+  USER
+  CONTACT
 }
 
-enum Status {
+enum OrgRole {
+  ADMIN
+  MANAGER
+  TEAM_MEMBER
+}
+
+enum OfferingType {
+  PRODUCT
+  SERVICE
+}
+
+enum PaymentStatus {
+  SUCCESS
+  REJECTED
+}
+
+enum SalesFunnelStage {
+  CONTACT
+  LEAD
+  QUALIFIED_LEAD
+  PROSPECT
+  OPPORTUNITY
+  PROPOSAL_SENT
+  NEGOTIATION
+  ONBOARDING
+  CUSTOMER
+  ACTIVE_CUSTOMER
+  LOYAL_CUSTOMER
+  AT_RISK_CUSTOMER
+  CHURNED_CUSTOMER
+  ADVOCATE
+}
+
+enum SubscriptionStatus {
+  CREATED
+  ACTIVE
+  PAUSED
+  CANCELLED
+}
+
+enum ServiceRequestStatus {
   CREATED
   DISCOVERY
   REJECTED
@@ -46,12 +96,84 @@ enum Status {
   COMPLETED
 }
 
-enum ResourceType {
-  PRODUCT
-  SERVICE
+enum Industry {
+  AGRICULTURE_FORESTRY_FISHING
+  MINING_QUARRYING
+  MANUFACTURING
+  ELECTRICITY_GAS_STEAM_AIR_CONDITIONING
+  WATER_SUPPLY_SEWERAGE_WASTE_MANAGEMENT
+  CONSTRUCTION
+  WHOLESALE_RETAIL_TRADE
+  TRANSPORTATION_STORAGE
+  ACCOMMODATION_FOOD_SERVICE
+  PUBLISHING_BROADCASTING_CONTENT_PRODUCTION
+  TELECOMMUNICATIONS_IT_SERVICES
+  FINANCIAL_INSURANCE
+  REAL_ESTATE
+  PROFESSIONAL_SCIENTIFIC_TECHNICAL
+  ADMINISTRATIVE_SUPPORT
+  PUBLIC_ADMINISTRATION_DEFENCE
+  EDUCATION
+  HUMAN_HEALTH_SOCIAL_WORK
+  ARTS_SPORTS_RECREATION
+  OTHER_SERVICES
+  HOUSEHOLD_ACTIVITIES
+  EXTRATERRITORIAL_ORGANIZATIONS
 }
 
-// v2 - Include portfolio
+model Token {
+  id           String      @id @default(cuid())
+  user         User        @relation(fields: [userId], references: [id])
+  userId       String
+  scope        Scope[]
+  accessToken  String
+  refreshToken String
+  sessions     Session[]   @relation("Token to session mapping")
+  loginSource  LoginSource
+}
+
+model User {
+  id                       String           @id @default(cuid())
+  email                    String           @unique
+  firstName                String
+  lastName                 String
+  phoneNumber              String?
+  platformRole             PlatformRole     @default(CONTACT)
+  organisation             String?
+  orgRole                  OrgRole?         @default(TEAM_MEMBER)
+  createdAt                DateTime         @default(now())
+  updatedAt                DateTime         @updatedAt
+  createdSolutions         Solution[]
+  password                 String?
+  oAuthProfile             OauthProfile?
+  sessions                 Session[]
+  userSlots                Slot[]           @relation("User to slot mapping")
+  hostSlots                Slot[]           @relation("Host to slot mapping")
+  currencies               Currency[]
+  feedbacks                Feedback[]       @relation("User to feedback mapping")
+  feedbacksVerified        Feedback[]       @relation("Verified feedback to admin mapping")
+  teamMemberOrganisation   Organisation?    @relation("Team members to org mapping", fields: [teamMemberOrganisationId], references: [id])
+  teamMemberOrganisationId String?
+  cancelledSlots           Slot[]           @relation("Cancelled slots to user mapping")
+  tokens                   Token[]
+  orgContacts              Contact[]
+  subscriptions            Subscription[]
+  serviceRequests          ServiceRequest[]
+  activities               Activity[]
+}
+
+model Contact {
+  id               String            @id @default(cuid())
+  user             User              @relation(fields: [userId], references: [id])
+  userId           String
+  organisationId   String
+  organisation     Organisation      @relation("Contact to org mapping", fields: [organisationId], references: [id])
+  salesFunnelStage SalesFunnelStage?
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+  serviceRequests  ServiceRequest[]
+  activities       Activity[]
+}
 
 model Currency {
   id            String    @id @default(cuid())
@@ -60,108 +182,138 @@ model Currency {
   symbol        String
   inrConversion Int
   isDisabled    Boolean?
-  variants      Variant[]
   createdBy     User      @relation(fields: [createdById], references: [id], onDelete: Cascade)
   createdById   String
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
+  Pricing       Pricing[]
 }
 
-model User {
-  id                String           @id @default(cuid())
-  email             String           @unique
-  firstName         String
-  lastName          String
-  phoneNumber       String?
-  role              Role             @default(USER)
-  organisation      String?
-  orgRole           String?
-  createdAt         DateTime         @default(now())
-  updatedAt         DateTime         @updatedAt
-  createdResource   Resource[]
-  password          String?
-  oAuthProfile      OauthProfile?
-  Session           Session[]
-  requestedServices ServiceRequest[]
-  clients           User[]           @relation("Client to solopreneur mapping")
-  solopreneur       User?            @relation("Client to solopreneur mapping", fields: [solopreneurId], references: [id], onDelete: Cascade)
-  solopreneurId     String?
-  adminCredentials  String?
-  userSlots         Slot[]           @relation("User to slot mapping")
-  adminSlots        Slot[]           @relation("Admin to slot mapping")
-  currencies        Currency[]
-  feedbacks         Feedback[]       @relation("User to feedback mapping")
-  feedbacksVerified Feedback[]       @relation("Verified feedback to admin mapping")
-  categories        Category[]       @relation("Category to Admin mapping")
+model Pricing {
+  id                      String           @id @default(cuid())
+  currency                Currency         @relation(fields: [currencyId], references: [id])
+  currencyId              String
+  basePrice               Int
+  discountPercentage      Int?
+  baseUserCount           Int?
+  frequency               Frequency?
+  additionalUserUnitPrice Int?
+  createdAt               DateTime         @default(now())
+  updatedAt               DateTime         @updatedAt
+  subscriptionPlan        SubscriptionPlan @relation("Subscription Plan to Pricing mapping", fields: [subscriptionPlanId], references: [id])
+  subscriptionPlanId      String           @unique
+  freeTrial               Boolean?
+  freeTrialPeriodMonths   Int?
 }
 
-// v2 - Include Products
-model Resource {
-  id           String       @id @default(cuid())
-  createdBy    User         @relation(fields: [createdById], references: [id], onDelete: Cascade)
-  createdById  String
-  title        String
-  description  String
-  resourceType ResourceType
-  variants     Variant[]
-  isDisabled   Boolean?
-  createdAt    DateTime     @default(now())
-  updatedAt    DateTime     @updatedAt
-  categoryId   String
-  category     Category     @relation("Resource to Category Mapping", fields: [categoryId], references: [id])
+model Solution {
+  id                String             @id @default(cuid())
+  createdBy         User               @relation(fields: [createdById], references: [id], onDelete: Cascade)
+  createdById       String
+  title             String
+  description       String
+  offerings         Offering[]
+  isDisabled        Boolean?
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  categoryId        String
+  subscriptionPlans SubscriptionPlan[] @relation("Subscription Plan to solution mapping")
 }
 
-model Variant {
-  id                String           @id @default(cuid())
-  resourceId        String
-  resource          Resource         @relation(fields: [resourceId], references: [id], onDelete: Cascade)
+model SubscriptionPlan {
+  id                String         @id @default(cuid())
+  title             String
+  solutionId        String?
+  solution          Solution?      @relation("Subscription Plan to solution mapping", fields: [solutionId], references: [id], onDelete: Cascade)
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
+  pricingId         String?        @unique
+  pricing           Pricing?       @relation("Subscription Plan to Pricing mapping")
+  includedOfferings Offering[]     @relation("Subscription Plan to Offering Mapping")
+  subscriptions     Subscription[] @relation("Subscription Plan to subscription mapping")
+}
+
+model Payment {
+  id             String        @id @default(cuid())
+  subscription   Subscription? @relation(fields: [subscriptionId], references: [id])
+  subscriptionId String?
+  baseAmount     Int
+  GST            Float?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  status         PaymentStatus
+  invoice        Invoice?      @relation
+  invoiceId      String?
+}
+
+model Invoice {
+  id        String   @id @default(cuid())
+  payment   Payment  @relation(fields: [paymentId], references: [id])
+  paymentId String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Subscription {
+  id                 String             @id @default(cuid())
+  subscriptionPlan   SubscriptionPlan   @relation("Subscription Plan to subscription mapping", fields: [subscriptionPlanId], references: [id])
+  subscriptionPlanId String
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
+  organisationId     String?
+  organisation       Organisation?      @relation(fields: [organisationId], references: [id])
+  userId             String?
+  user               User?              @relation(fields: [userId], references: [id])
+  payments           Payment[]
+  status             SubscriptionStatus @default(CREATED)
+}
+
+model Offering {
+  id                String             @id @default(cuid())
+  offeringType      OfferingType
+  solutionId        String
+  solution          Solution           @relation(fields: [solutionId], references: [id], onDelete: Cascade)
   title             String
   details           String[]
-  price             Float
-  currency          Currency         @relation(fields: [currencyId], references: [id])
-  requestedBy       ServiceRequest[]
+  serviceRequest    ServiceRequest[]
   isDisabled        Boolean?
-  createdAt         DateTime         @default(now())
-  updatedAt         DateTime         @updatedAt
-  currencyId        String
-  pricingModel      PricingModel
-  unitCount         Int?
-  overages          Float?
-  includedVariantId String?
-  includedVariant   Variant?         @relation("Offers in one variant included in the other", fields: [includedVariantId], references: [id])
-  variantIncludedIn Variant[]        @relation("Offers in one variant included in the other")
-  feedbacks         Feedback[]       @relation("Feedback to variant mapping")
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  feedbackList      Feedback[]         @relation("Feedback to offering mapping")
+  subscriptionPlans SubscriptionPlan[] @relation("Subscription Plan to Offering Mapping")
 }
 
 model Session {
-  id           String      @id @default(cuid())
-  loginSource  LoginSource
-  userId       String
-  user         User        @relation(fields: [userId], references: [id], onDelete: Cascade)
-  accessToken  String      @unique
-  refreshToken String?     @unique
-  createdAt    DateTime    @default(now())
-  endsAt       DateTime
-  lastActive   DateTime    @updatedAt
+  id         String   @id @default(cuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tokens     Token[]  @relation("Token to session mapping")
+  createdAt  DateTime @default(now())
+  endsAt     DateTime
+  lastActive DateTime @updatedAt
 
   @@unique([userId])
 }
 
 model ServiceRequest {
-  id          String   @id @default(cuid())
-  userId      String
-  variantId   String
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  variant     Variant  @relation(fields: [variantId], references: [id], onDelete: Cascade)
-  slot        Slot?
-  description String?
-  subject     String
-  isDisabled  Boolean?
-  status      Status   @default(CREATED)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id             String               @id @default(cuid())
+  contactId      String?
+  offeringId     String
+  contact        Contact?             @relation(fields: [contactId], references: [id], onDelete: Cascade)
+  offering       Offering             @relation(fields: [offeringId], references: [id], onDelete: Cascade)
+  slot           Slot?
+  description    String?
+  subject        String
+  isDisabled     Boolean?
+  status         ServiceRequestStatus @default(CREATED)
+  createdAt      DateTime             @default(now())
+  updatedAt      DateTime             @updatedAt
+  User           User?                @relation(fields: [userId], references: [id])
+  userId         String?
+  organisationId String?
+  organisation   Organisation?        @relation(fields: [organisationId], references: [id])
 
-  @@unique([userId, variantId])
+  @@unique([contactId, offeringId])
 }
 
 model Slot {
@@ -169,7 +321,7 @@ model Slot {
   userId             String?
   user               User?           @relation("User to slot mapping", fields: [userId], references: [id], onDelete: Cascade)
   hostId             String
-  host               User            @relation("Admin to slot mapping", fields: [hostId], references: [id], onDelete: Cascade)
+  host               User            @relation("Host to slot mapping", fields: [hostId], references: [id], onDelete: Cascade)
   createdAt          DateTime        @default(now())
   updatedAt          DateTime        @updatedAt
   timestamp          DateTime
@@ -179,33 +331,66 @@ model Slot {
   calendarEventId    String?
   isCancelled        Boolean?
   cancellationReason String?
-  cancelledBy        Role?
+  cancelledBy        User?           @relation("Cancelled slots to user mapping", fields: [cancelledById], references: [id])
+  cancelledById      String?
 }
 
 model Feedback {
-  id           String   @id @default(cuid())
+  id           String    @id @default(cuid())
   userId       String
-  user         User     @relation("User to feedback mapping", fields: [userId], references: [id], onDelete: Cascade)
+  user         User      @relation("User to feedback mapping", fields: [userId], references: [id], onDelete: Cascade)
   rating       Int
   testimonial  String
   improvements String[]
-  variant      Variant  @relation("Feedback to variant mapping", fields: [variantId], references: [id])
-  variantId    String
+  offering     Offering? @relation("Feedback to offering mapping", fields: [offeringId], references: [id])
+  offeringId   String?
   isApproved   Boolean?
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
   verifiedById String
-  verifiedBy   User     @relation("Verified feedback to admin mapping", fields: [verifiedById], references: [id])
+  verifiedBy   User      @relation("Verified feedback to admin mapping", fields: [verifiedById], references: [id])
 }
 
-model Category {
-  id          String     @id @default(cuid())
-  title       String
-  description String
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
-  createdById String
-  createdBy   User       @relation("Category to Admin mapping", fields: [createdById], references: [id])
-  resources   Resource[] @relation("Resource to Category Mapping")
-  isDisabled  Boolean?
+model Organisation {
+  id              String           @id @default(cuid())
+  industry        Industry
+  description     String?
+  name            String
+  teamMembers     User[]           @relation("Team members to org mapping")
+  contacts        Contact[]        @relation("Contact to org mapping")
+  address         String
+  city            String
+  state           String
+  country         String
+  zipCode         String
+  subscriptions   Subscription[]
+  serviceRequests ServiceRequest[]
+}
+
+model Activity {
+  id                  String       @id @default(cuid())
+  contact             Contact?     @relation(fields: [contactId], references: [id], onDelete: Cascade)
+  contactId           String?
+  user                User?        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId              String?
+  activityType        ActivityType
+  subject             String
+  notes               String?
+  activityDate        DateTime
+  isFollowUp          Boolean      @default(false)
+  followUpFrequency   Frequency?
+  customFrequencyDays Int?
+  nextFollowUp        DateTime?
+  completed           Boolean      @default(false)
+  createdAt           DateTime     @default(now())
+  updatedAt           DateTime     @updatedAt
+}
+
+enum ActivityType {
+  CALL
+  EMAIL
+  MEETING
+  FOLLOW_UP
+  NOTE
+  TASK
 }

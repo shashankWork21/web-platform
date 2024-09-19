@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import type { Role, User } from "@prisma/client";
+import type { PlatformRole, OrgRole, User } from "@prisma/client";
 import { db } from "../db";
 import { hashPassword } from "../utils/password";
 import {
@@ -50,13 +50,14 @@ export async function registerUser(request: Request, response: Response) {
 export async function getAllUsers(request: Request, response: Response) {
   try {
     const users = await db.user.findMany({
-      select: {
-        id: true,
-        firstName: true,
-        lastName: true,
-        email: true,
-        phoneNumber: true,
-      },
+      // select: {
+      //   id: true,
+      //   firstName: true,
+      //   lastName: true,
+      //   email: true,
+      //   phoneNumber: true,
+      // },
+      include: { tokens: {} },
     });
     return response.status(200).json(users);
   } catch (error: unknown) {
@@ -81,7 +82,7 @@ export async function getUserById(request: Request, response: Response) {
         phoneNumber: true,
         organisation: true,
         orgRole: true,
-        role: true,
+        platformRole: true,
       },
     });
     return response.status(200).json(user);
@@ -129,6 +130,8 @@ export async function deleteUserById(request: Request, response: Response) {
     if (!id) {
       return response.status(400).json({ error: "Invalid id" });
     }
+    await db.token.deleteMany({ where: { userId: id } });
+    await db.session.deleteMany({ where: { userId: id } });
     await db.user.delete({ where: { id } });
     return response.status(200).json({ status: "done" });
   } catch (error: unknown) {

@@ -1,7 +1,6 @@
 import express from "express";
 import {
   createSessionWithEmailAndPassword,
-  createSessionWithGoogleLogin,
   deleteAllSessions,
   deleteSession,
   validateSession,
@@ -10,7 +9,6 @@ import {
 const sessionRouter = express.Router();
 
 sessionRouter.post("/password", createSessionWithEmailAndPassword);
-sessionRouter.get("/google", createSessionWithGoogleLogin);
 sessionRouter.delete("/", deleteSession);
 sessionRouter.get("/", validateSession);
 sessionRouter.delete("/", deleteAllSessions);

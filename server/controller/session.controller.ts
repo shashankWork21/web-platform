@@ -1,7 +1,5 @@
 import { Request, Response } from "express";
 import { db } from "../db";
-import jwt, { JwtPayload } from "jsonwebtoken";
-import { environment } from "../utils/environment";
 import {
   generateSessionToken,
   generateTokens,
@@ -12,10 +10,8 @@ import {
   getSesssionTokenFromCookie,
 } from "../utils/session.utils";
 
-import type { User } from "@prisma/client";
+import { LoginSource, type User } from "@prisma/client";
 import { exclude } from "../utils/exclude";
-
-const oauthSecret = environment.oauthSecret as string;
 
 export async function createSessionWithEmailAndPassword(
   request: Request,
@@ -23,7 +19,6 @@ export async function createSessionWithEmailAndPassword(
 ) {
   try {
     const { email, password } = request.body;
-    console.log(password);
     if (!email || !password) {
       throw new Error("Email and Password required!");
     }
@@ -38,17 +33,21 @@ export async function createSessionWithEmailAndPassword(
     }
 
     const { accessToken, refreshToken } = generateTokens(user);
-    const sessionToken = await generateSessionToken(
-      user,
-      accessToken,
-      refreshToken,
-      "PASSWORD"
-    );
+
+    const tokens = await db.token.create({
+      data: {
+        userId: user.id,
+        loginSource: "PASSWORD",
+        accessToken,
+        refreshToken,
+        scope: ["EMAIL", "PROFILE"],
+      },
+    });
+    const sessionToken = await generateSessionToken(user, [tokens]);
 
     response.cookie("session", sessionToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      domain: "http://localhost:3000",
     });
     return response.status(201).json({ user });
   } catch (error: unknown) {
@@ -56,55 +55,6 @@ export async function createSessionWithEmailAndPassword(
       return response.status(403).json({ error: error.message });
     }
     return response.status(403).json({ error: "Something went wrong" });
-  }
-}
-
-export async function createSessionWithGoogleLogin(
-  request: Request,
-  response: Response
-) {
-  try {
-    const googleUserToken = request.query?.google_session as string;
-    const userData = jwt.verify(googleUserToken, oauthSecret) as JwtPayload & {
-      userId: string;
-      accessToken: string;
-      refreshToken: string;
-      role: string;
-      isNewUser: boolean;
-    };
-
-    const user = (await db.user.findUnique({
-      where: { id: userData.userId },
-    })) as User;
-
-    const sessionToken = await generateSessionToken(
-      user,
-      userData.accessToken,
-      userData.refreshToken,
-      "GOOGLE"
-    );
-
-    let redirectUrl: string;
-    if (userData.role === "ADMIN") {
-      redirectUrl = environment.adminLink;
-    } else {
-      if (userData.isNewUser) {
-        redirectUrl = environment.newUserLink;
-      } else {
-        redirectUrl = environment.existingUserLink;
-      }
-    }
-
-    response.cookie("session", sessionToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-    });
-    return response.redirect(redirectUrl);
-  } catch (error: unknown) {
-    console.log(error);
-    return response
-      .status(403)
-      .json({ error: "Invalid user credentials. Try again" });
   }
 }
 
@@ -133,30 +83,31 @@ export async function validateSession(request: Request, response: Response) {
     const { user: initialUser, session } = await getUserFromSessionToken(
       sessionToken
     );
-    const { loginSource } = session;
     let updatedSessionToken: string, user: User, validationResult: any;
-    switch (loginSource) {
-      case "PASSWORD":
-        validationResult = await validatePasswordSession(
-          initialUser as User,
-          session
-        );
-        break;
-      case "GOOGLE":
-        validationResult = await validateGoogleSession(
-          initialUser as User,
-          session
-        );
+    if (
+      session.tokens.find((token) => token.loginSource === LoginSource.PASSWORD)
+    ) {
+      validationResult = await validatePasswordSession(
+        initialUser as User,
+        session
+      );
     }
+    if (
+      session.tokens.find((token) => token.loginSource === LoginSource.GOOGLE)
+    ) {
+      validationResult = await validateGoogleSession(
+        initialUser as User,
+        session
+      );
+    }
+
     updatedSessionToken = validationResult.sessionToken;
     user = validationResult.user;
     response.cookie("session", updatedSessionToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
     });
-    return response
-      .status(200)
-      .json({ user: exclude(user, ["adminCredentials", "password"]) });
+    return response.status(200).json({ user: exclude(user, ["password"]) });
   } catch (error: unknown) {
     if (error instanceof Error) {
       return response.status(403).json({ error: error.message });
